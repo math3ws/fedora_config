@@ -2,37 +2,36 @@
 # script variables
 #======================================
 
-# absolute path of this script file
-scriptpath=$(cd -P -- "$(dirname -- "$0")" && printf '%s\n' "$(pwd -P)/$(basename -- "$0")")
-resourcepath=$scriptdir/installres
+SCRIPTPATH=$(readlink -f "$0")
+SCRIPTDIRPATH=$(dirname "$SCRIPTPATH")
+RESOURCEPATH=$SCRIPTDIRPATH/installres
 
 #======================================
 # install packages
 #======================================
 
-packages="$packages curl"
-packages="$packages dmenu"
-packages="$packages git"
-packages="$packages i3"
-packages="$packages i3lock-color"
-packages="$packages i3status"
-packages="$packages util-linux-user"
-packages="$packages vim-enhanced"
-packages="$packages zsh"
+PACKAGES="$PACKAGES curl"
+PACKAGES="$PACKAGES dmenu"
+PACKAGES="$PACKAGES git"
+PACKAGES="$PACKAGES i3"
+PACKAGES="$PACKAGES i3lock-color"
+PACKAGES="$PACKAGES i3status"
+PACKAGES="$PACKAGES util-linux-user"
+PACKAGES="$PACKAGES vim-enhanced"
+PACKAGES="$PACKAGES zsh"
 
 dnf copr enable -y ianhattendorf/desktop
-dnf -y update
-dnf install -y $packages
+dnf install -y $PACKAGES
 
 #======================================
 # clone git repo
 #======================================
 
-git clone https://github.com/math3ws/fedora_config.git $resourcepath
+git clone https://github.com/math3ws/fedora_config.git $RESOURCEPATH
 
 #======================================
 # run setup script
 #======================================
 
-$resourcepath/script/setup.sh
+$RESOURCEPATH/script/setup.sh
 
