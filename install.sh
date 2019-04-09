@@ -12,7 +12,7 @@ packages="$packages util-linux-user"
 packages="$packages vim-enhanced"
 packages="$packages zsh"
 
-dnf install -y zsh $packages
+dnf install -y $packages
 
 # shell setup
 chsh -s /bin/zsh
