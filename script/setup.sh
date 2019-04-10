@@ -4,8 +4,8 @@
 
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIRPATH=$(dirname "$SCRIPTPATH")
-RESOURCEPATH=$SCRIPTDIRPATH/res
-SCRIPTUSER="who | cut -d \" \" -f1"
+RESOURCEPATH=$SCRIPTDIRPATH/../res
+SCRIPTUSER=$(who | cut -d " " -f1)
 
 #======================================
 # terminal setup

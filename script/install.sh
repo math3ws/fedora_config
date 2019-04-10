@@ -5,7 +5,7 @@
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIRPATH=$(dirname "$SCRIPTPATH")
 RESOURCEPATH=$SCRIPTDIRPATH/installres
-SCRIPTUSER="who | cut -d \" \" -f1"
+SCRIPTUSER=$(who | cut -d \" \" -f1)
 
 #======================================
 # install packages
