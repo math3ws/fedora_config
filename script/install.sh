@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #======================================
 # script variables
 #======================================
@@ -5,7 +7,7 @@
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPTPATH")
 RESOURCEDIR=$SCRIPTDIR/installres
-SCRIPTUSER=$(who | cut -d \" \" -f1)
+SCRIPTUSER=$(who | cut -d " " -f1)
 
 #======================================
 # install packages

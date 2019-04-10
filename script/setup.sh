@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #======================================
 # script variables
 #======================================
@@ -12,7 +14,7 @@ SCRIPTUSER=$(who | cut -d " " -f1)
 #======================================
 
 chsh -s /bin/zsh $SCRIPTUSER
-cd ~ && sudo -u $SCRIPTUSER sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+cd ~ && sudo -u $SCRIPTUSER $SCRIPTDIR/ohmyzshsetup.sh 
 
 #======================================
 # i3 setup
