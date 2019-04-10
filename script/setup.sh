@@ -30,6 +30,10 @@ sudo -u $SCRIPTUSER echo "Icon=/home/$SCRIPTUSER/.face" >> $GDMUSERFILE
 # modify zshconfig
 #======================================
 
+cp "$RESOURCEDIR/zshrc" "/home/$SCRIPTUSER/.zshrc"
+cp "$RESOURCEDIR/alias.zsh" "/home/$SCRIPTUSER/.oh-my-zsh/custom/alias.zsh"
+cp "$RESOURCEDIR/Xresources" "/home/$SCRIPTUSER/.Xresources"
+
 #======================================
 # automount windows
 #======================================

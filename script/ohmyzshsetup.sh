@@ -18,6 +18,6 @@ OHMYZSHINSTALLFILE=$TEMPDIR/ohmyzshinstall.sh
 mkdir -p $TEMPDIR
 wget -O $OHMYZSHINSTALLFILE  https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh
 sed -i.tmp '/env zsh/d' $OHMYZSHINSTALLFILE
-sed -i.tmp '/chsh/d' $OHMYZSHINSTALLFILE
-sh $OHMYZSHINSTALLFILE
+sed -i.tmp '/chsh -s/d' $OHMYZSHINSTALLFILE
+sh $OHMYZSHINSTALLFILE &>/dev/null
 
