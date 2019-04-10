@@ -3,8 +3,8 @@
 #======================================
 
 SCRIPTPATH=$(readlink -f "$0")
-SCRIPTDIRPATH=$(dirname "$SCRIPTPATH")
-RESOURCEPATH=$SCRIPTDIRPATH/../res
+SCRIPTDIR=$(dirname "$SCRIPTPATH")
+RESOURCDIR=$SCRIPTDIR/../res
 SCRIPTUSER=$(who | cut -d " " -f1)
 
 #======================================
@@ -19,7 +19,7 @@ cd ~ && sudo -u $SCRIPTUSER sh -c "$(curl -fsSL https://raw.github.com/robbyruss
 #======================================
 
 # variant for gdm
-GDMUSERFILETEMPLATE=$RESOURCEPATH/accountservice
+GDMUSERFILETEMPLATE=$RESOURCEDIR/accountservice
 GDMUSERFILE=/var/lib/AccountService/users/$SCRIPTUSER
 sudo -u $SCRIPTUSER cp $GDMUSERFILETEMPLATE $GDMUSERFILE
 sudo -u $SCRIPTUSER echo "Icon=/home/$SCRIPTUSER/.face" >> $GDMUSERFILE
