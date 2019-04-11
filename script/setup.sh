@@ -23,16 +23,16 @@ cd ~ && sudo -u $SCRIPTUSER $SCRIPTDIR/ohmyzshsetup.sh
 # variant for gdm:
 GDMUSERFILETEMPLATE="$RESOURCEDIR/accountsservice"
 GDMUSERFILE="/var/lib/AccountsService/users/$SCRIPTUSER"
-sudo -u $SCRIPTUSER cp $GDMUSERFILETEMPLATE $GDMUSERFILE
-sudo -u $SCRIPTUSER echo "Icon=/home/$SCRIPTUSER/.face" >> $GDMUSERFILE
+cp $GDMUSERFILETEMPLATE $GDMUSERFILE
+echo "Icon=/home/$SCRIPTUSER/.face" >> $GDMUSERFILE
 
 #======================================
 # modify zshconfig
 #======================================
 
-cp "$RESOURCEDIR/zshrc" "/home/$SCRIPTUSER/.zshrc"
-cp "$RESOURCEDIR/alias.zsh" "/home/$SCRIPTUSER/.oh-my-zsh/custom/alias.zsh"
-cp "$RESOURCEDIR/Xresources" "/home/$SCRIPTUSER/.Xresources"
+sudo -u $SCRIPTUSER cp "$RESOURCEDIR/zshrc" "/home/$SCRIPTUSER/.zshrc"
+sudo -u $SCRIPTUSER cp "$RESOURCEDIR/alias.zsh" "/home/$SCRIPTUSER/.oh-my-zsh/custom/alias.zsh"
+sudo -u $SCRIPTUSER cp "$RESOURCEDIR/Xresources" "/home/$SCRIPTUSER/.Xresources"
 
 #======================================
 # automount windows
