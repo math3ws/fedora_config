@@ -30,7 +30,7 @@ dnf install -y $PACKAGES
 # clone git repo
 #======================================
 
-sudo -u $SCRIPTUSER git clone https://github.com/math3ws/fedora_config.git $RESOURCEDIR
+sudo -u $SCRIPTUSER git clone https://github.com/math3ws/fedora_config.git $RESOURCEDIR || git -C $RESOURCEDIR pull
 
 #======================================
 # run setup script
