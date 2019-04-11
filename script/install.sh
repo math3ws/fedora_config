@@ -6,7 +6,7 @@
 
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPTPATH")
-RESOURCEDIR=$SCRIPTDIR/installres
+RESOURCEDIR=$($SCRIPTDIR/installres)
 SCRIPTUSER=$(who | cut -d " " -f1)
 
 #======================================
@@ -30,7 +30,13 @@ dnf install -y $PACKAGES
 # clone git repo
 #======================================
 
-sudo -u $SCRIPTUSER git clone https://github.com/math3ws/fedora_config.git $RESOURCEDIR || git -C $RESOURCEDIR pull
+GITREMOTE=$("https://github.com/math3ws/fedora_config.git")
+
+git -C $RESOURCEDIR ls-remote $GITREMOTE &>/dev/null
+if [ $? -eq 0  ] # $RESOURCEDIR is a valid git repo pointing to $GITREMOTE
+    sudo -u $SCRIPTUSER git -C $RESOURCEDIR checkout master && git -C $RESOURCEDIR pull
+else # we need to clone the repo
+    sudo -u $SCRIPTUSER git clone $GITREMOTE $RESOURCEDIR
 
 #======================================
 # run setup script
