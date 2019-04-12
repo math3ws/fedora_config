@@ -6,7 +6,7 @@
 
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPTPATH")
-RESOURCEDIR=$($SCRIPTDIR/installres)
+RESOURCEDIR="$SCRIPTDIR/installres"
 SCRIPTUSER=$(who | cut -d " " -f1)
 VERBOSE=0
 
@@ -40,18 +40,18 @@ PACKAGES="$PACKAGES zsh"
 
 REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
 PACKAGEINSTALLCOMMAND="dnf install -y $PACKAGES"
-if [ $VERBOSE -eq 1 ] then
+if [ $VERBOSE -eq 1 ]; then
     REPOENABLECOMMAND="$REPOENABLECOMMAND -q"
     PACKAGEINSTALLCOMMAND="$PACKAGEINSTALLCOMMAND -q"
 fi
 
-eval ${$REPOENABLECOMMAND}
-if [ $? -eq 0 ] then
+eval $REPOENABLECOMMAND
+if [ $? -eq 0 ]; then
     echo "An error occured. Exiting."
     return 1
 fi
-eval ${$PACKAGEINSTALLCOMMAND}
-if [ $? -eq 0 ] then
+eval $PACKAGEINSTALLCOMMAND
+if [ $? -eq 0 ]; then
     echo "An error occured. Exiting."
     return 2
 fi
@@ -66,25 +66,25 @@ GITREMOTE=$("https://github.com/math3ws/fedora_config.git")
 
 GITCOMMAND=""
 git -C $RESOURCEDIR ls-remote $GITREMOTE &>/dev/null
-if [ $? -eq 0  ] then # $RESOURCEDIR is a valid git repo pointing to $GITREMOTE
+if [ $? -eq 0  ]; then # $RESOURCEDIR is a valid git repo pointing to $GITREMOTE
     echo "Resources available. Checking out latest version..."
     GITCOMMAND="sudo -u $SCRIPTUSER git -C $RESOURCEDIR checkout master"
-    if [ $VERBOSE -eq 1 ] then
+    if [ $VERBOSE -eq 1 ]; then
         GITCOMMAND="$GITCOMMAND -q"
     fi
     GITCOMMAND="$GITCOMMAND && git -C $RESOURCEDIR pull"
-    if [ $VERBOSE -eq 1 ] then
+    if [ $VERBOSE -eq 1 ]; then
         GITCOMMAND="$GITCOMMAND -q"
     fi
 else # we need to clone the repo
     echo "Resources not available. Cloning repository..."
     GITCOMMAND="sudo -u $SCRIPTUSER git clone $GITREMOTE $RESOURCEDIR"
-    if [ $VERBOSE -eq 1 ] then
+    if [ $VERBOSE -eq 1 ]; then
         GITCOMMAND="$GITCOMMAND -q"
     fi
 fi
 
-eval ${$GITCOMMAND}
+eval $GITCOMMAND
 if [ $? -eq 0 ] then
     echo "An error occured. Exiting."
     return 3
