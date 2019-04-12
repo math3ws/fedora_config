@@ -34,7 +34,9 @@ GDMUSERFILE="/var/lib/AccountsService/users/$SCRIPTUSER"
 cp $GDMUSERFILETEMPLATE $GDMUSERFILE
 echo "Icon=/home/$SCRIPTUSER/.face" >> $GDMUSERFILE
 # generic steps
-sudo -u $SCRIPTUSER cp "$RESOURCEDIR/i3config" "/home/$SCRIPTUSER/.config/i3/config"
+I3CONFIGDIR="/home/$SCRIPTUSER/.config/i3"
+mkdir -p $I3CONFIGDIR
+sudo -u $SCRIPTUSER cp "$RESOURCEDIR/i3config" $I3CONFIGDIR/config"
 
 #======================================
 # automount windows
