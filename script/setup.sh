@@ -34,28 +34,32 @@ sudo -u $SCRIPTUSER cp "$RESOURCEDIR/Xresources" "/home/$SCRIPTUSER/.Xresources"
 # i3 setup
 #======================================
 
+I3CONFIGDIR="/home/$SCRIPTUSER/.config/i3"
+I3CONFIGCOMMAND="sudo -u $SCRIPTUSER mkdir -p $I3CONFIGDIR"
+I3CONFIGCOMMAND="$I3CONFIGCOMMAND && sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/i3config\" \"$I3CONFIGDIR/config\""
+
+echo "Configuring i3..."
+eval $I3CONFIGCOMMAND
+if [ $? -ne 0 ]; then
+    echo "An error occured. Exiting."
+    return 16
+fi
+
+#======================================
+# session manager setup
+#======================================
+
 # gdm-specific steps:
 GDMUSERFILETEMPLATE="$RESOURCEDIR/accountsservice"
 GDMUSERFILE="/var/lib/AccountsService/users/$SCRIPTUSER"
 SESSIONMANAGERCHANGECOMMAND="cp $GDMUSERFILETEMPLATE $GDMUSERFILE"
 SESSIONMANAGERCHANGECOMMAND="$SESSIONMANAGERCHANGECOMMAND && echo \"Icon=/home/$SCRIPTUSER/.face\" >> $GDMUSERFILE"
 
-# generic steps
-I3CONFIGDIR="/home/$SCRIPTUSER/.config/i3"
-I3CONFIGCOMMAND="sudo -u $SCRIPTUSER mkdir -p $I3CONFIGDIR"
-I3CONFIGCOMMAND="$I3CONFIGCOMMAND && sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/i3config\" \"$I3CONFIGDIR/config\""
-
 echo "Changing session manager to i3..."
 eval $SESSIONMANAGERCHANGECOMMAND
 if [ $? -ne 0 ]; then
     echo "An error occured. Exiting."
     return 15
-fi
-echo "Configuring i3..."
-eval $I3CONFIGCOMMAND
-if [ $? -ne 0 ]; then
-    echo "An error occured. Exiting."
-    return 16
 fi
 
 #======================================
