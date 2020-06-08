@@ -79,7 +79,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #======================================
-# zsh setup
+# oh-my-zsh installation
 #======================================
 
 OHMYZSHINSTALLFILE="$TEMPDIR/ohmyzshinstall.sh"
@@ -95,21 +95,32 @@ if [ $VERBOSE -eq 0 ]; then
      OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND &>/dev/null"
 fi
 
-ZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/zshrc\" \"/home/$SCRIPTUSER/.zshrc\""
-OHMYZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/alias.zsh\" \"/home/$SCRIPTUSER/.oh-my-zsh/custom/alias.zsh\""
-
 echo "Installing oh-my-zsh..."
 eval $OHMYZSHINSTALLCOMMAND
 if [ $? -ne 0 ]; then
     echo "An error occured. Exiting."
     return 12
 fi
+
+#======================================
+# zsh config
+#======================================
+
+ZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/zshrc\" \"/home/$SCRIPTUSER/.zshrc\""
+
 echo "Configuring zsh..."
 eval $ZSHCONFIGCOMMAND
 if [ $? -ne 0 ]; then
     echo "An error occured. Exiting."
     return 13
 fi
+
+#======================================
+# oh-my-zsh config
+#======================================
+
+OHMYZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/alias.zsh\" \"/home/$SCRIPTUSER/.oh-my-zsh/custom/alias.zsh\""
+
 echo "Configuring oh-my-zsh..."
 eval $OHMYZSHCONFIGCOMMAND
 if [ $? -ne 0 ]; then
