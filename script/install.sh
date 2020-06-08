@@ -23,6 +23,24 @@ while getopts v: opt; do
 done
 
 #======================================
+# enable repos
+#======================================
+
+echo "Enabling third-party repos..."
+
+REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
+
+if [ $VERBOSE -eq 0 ]; then
+    REPOENABLECOMMAND="$REPOENABLECOMMAND -q &> /dev/null"
+fi
+
+eval $REPOENABLECOMMAND
+if [ $? -ne 0 ]; then
+    echo "An error occured. Exiting."
+    return 1
+fi
+
+#======================================
 # install packages
 #======================================
 
@@ -38,18 +56,11 @@ PACKAGES="$PACKAGES util-linux-user"
 PACKAGES="$PACKAGES vim-enhanced"
 PACKAGES="$PACKAGES zsh"
 
-REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
 PACKAGEINSTALLCOMMAND="dnf install -y $PACKAGES"
 if [ $VERBOSE -eq 0 ]; then
-    REPOENABLECOMMAND="$REPOENABLECOMMAND -q &> /dev/null"
-    PACKAGEINSTALLCOMMAND="$PACKAGEINSTALLCOMMAND -q"
+    PACKAGEINSTALLCOMMAND="$PACKAGEINSTALLCOMMAND -q &> /dev/null"
 fi
 
-eval $REPOENABLECOMMAND
-if [ $? -ne 0 ]; then
-    echo "An error occured. Exiting."
-    return 1
-fi
 eval $PACKAGEINSTALLCOMMAND
 if [ $? -ne 0 ]; then
     echo "An error occured. Exiting."
