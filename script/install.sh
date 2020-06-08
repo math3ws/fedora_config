@@ -7,7 +7,7 @@ main () {
 
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPTPATH")
-RESOURCEDIR="$SCRIPTDIR/installres"
+RESOURCEDIR="/tmp/fedora-config/res"
 SCRIPTUSER=$(who | cut -d " " -f1)
 VERBOSE=0
 
@@ -31,7 +31,7 @@ echo "Enabling third-party repos..."
 REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
 
 if [ $VERBOSE -eq 0 ]; then
-    REPOENABLECOMMAND="$REPOENABLECOMMAND -q &> /dev/null"
+    REPOENABLECOMMAND="$REPOENABLECOMMAND -q &>/dev/null"
 fi
 
 eval $REPOENABLECOMMAND
@@ -58,7 +58,7 @@ PACKAGES="$PACKAGES zsh"
 
 PACKAGEINSTALLCOMMAND="dnf install -y $PACKAGES"
 if [ $VERBOSE -eq 0 ]; then
-    PACKAGEINSTALLCOMMAND="$PACKAGEINSTALLCOMMAND -q &> /dev/null"
+    PACKAGEINSTALLCOMMAND="$PACKAGEINSTALLCOMMAND -q &>/dev/null"
 fi
 
 eval $PACKAGEINSTALLCOMMAND
