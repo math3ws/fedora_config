@@ -63,13 +63,24 @@ if [ $? -ne 0 ]; then
 fi
 
 #======================================
-# zsh setup
+# shell change
 #======================================
 
 CHSHCOMMAND="chsh -s /bin/zsh $SCRIPTUSER"
 if [ $VERBOSE -eq 0 ]; then
     CHSHCOMMAND="$CHSHCOMMAND &>/dev/null"
 fi
+
+echo "Changing shell to zsh..."
+eval $CHSHCOMMAND
+if [ $? -ne 0 ]; then
+    echo "An error occured. Exiting."
+    return 11
+fi
+
+#======================================
+# zsh setup
+#======================================
 
 OHMYZSHINSTALLFILE="$TEMPDIR/ohmyzshinstall.sh"
 OHMYZSHINSTALLFILEURL="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh"
@@ -87,12 +98,6 @@ fi
 ZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/zshrc\" \"/home/$SCRIPTUSER/.zshrc\""
 OHMYZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/alias.zsh\" \"/home/$SCRIPTUSER/.oh-my-zsh/custom/alias.zsh\""
 
-echo "Changing shell to zsh..."
-eval $CHSHCOMMAND
-if [ $? -ne 0 ]; then
-    echo "An error occured. Exiting."
-    return 11
-fi
 echo "Installing oh-my-zsh..."
 eval $OHMYZSHINSTALLCOMMAND
 if [ $? -ne 0 ]; then
