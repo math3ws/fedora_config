@@ -24,7 +24,7 @@ while getopts v: opt; do
 done
 
 #======================================
-# general setup
+# Xresources setup
 #======================================
 
 echo "Deploying .Xresources file..."
