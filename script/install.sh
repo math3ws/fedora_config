@@ -1,5 +1,13 @@
 #!/bin/sh
 
+isRanAsRoot () {
+	echo "Checking if script is ran as root..."
+	if [[ $EUID -ne 0 ]]; then
+	   echo "This script must be run as root" 
+	   return 1
+	fi
+}
+
 main () {
 #======================================
 # script variables
@@ -108,5 +116,6 @@ fi
 $RESOURCEDIR/script/setup.sh
 }
 
+isRanAsRoot
 main
 
