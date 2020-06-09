@@ -8,7 +8,7 @@ isRanAsRoot () {
 	fi
 }
 
-main () {
+setupProgramSettings () {
 #======================================
 # script variables
 #======================================
@@ -29,11 +29,9 @@ while getopts v: opt; do
 	   ;;
     esac
 done
+}
 
-#======================================
-# enable repos
-#======================================
-
+enableRepos () {
 echo "Enabling third-party repos..."
 
 REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
@@ -47,7 +45,9 @@ if [ $? -ne 0 ]; then
     echo "An error occured. Exiting."
     return 1
 fi
+}
 
+main () {
 #======================================
 # install packages
 #======================================
@@ -116,5 +116,5 @@ fi
 $RESOURCEDIR/script/setup.sh
 }
 
-isRanAsRoot && main
+isRanAsRoot && setupProgramSettings && enableRepos && main
 
