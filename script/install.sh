@@ -116,6 +116,5 @@ fi
 $RESOURCEDIR/script/setup.sh
 }
 
-isRanAsRoot
-main
+isRanAsRoot && main
 
