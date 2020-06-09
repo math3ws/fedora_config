@@ -7,7 +7,7 @@ main () {
 
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPTPATH")
-RESOURCEDIR="/tmp/fedora-config/res"
+RESOURCEDIR="/tmp/fedora-config"
 SCRIPTUSER=$(who | cut -d " " -f1)
 VERBOSE=0
 
