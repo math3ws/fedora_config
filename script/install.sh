@@ -113,7 +113,7 @@ fi
 # run setup script
 #======================================
 
-$RESOURCEDIR/script/setup.sh
+    $RESOURCEDIR/script/install_impl.sh
 }
 
 isRanAsRoot && setupProgramSettings && enableRepos && main
