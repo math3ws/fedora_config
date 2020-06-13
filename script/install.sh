@@ -87,7 +87,7 @@ installPackages() {
 cloneResources () {
     echo "Checking if resources are available..."
 
-    GITREMOTE="https://github.com/math3ws/fedora_config.git"
+    GITREMOTE="git@github.com:math3ws/fedora_config.git"
 
     GITCOMMAND=""
     git -C $RESOURCEDIR ls-remote $GITREMOTE &>/dev/null
