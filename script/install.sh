@@ -123,5 +123,12 @@ runInstallImpl() {
     $RESOURCEDIR/script/install_impl.sh
 }
 
-isRanAsRoot && setupProgramSettings && parseArguments && enableRepos && installPackages && cloneResources && runInstallImpl
+#======================================
+# run install_impl.sh script
+#======================================
+runInstallImpl() {
+    $RESOURCEDIR/script/install_optional.sh
+}
+
+isRanAsRoot && setupProgramSettings && parseArguments && enableRepos && installPackages && cloneResources && runInstallImpl && runInstallOptional
 
