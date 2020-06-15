@@ -126,14 +126,14 @@ cloneResources () {
     GITREMOTE="git@github.com:math3ws/fedora_config.git"
 
     GITCOMMAND=""
-    git -C $RESOURCEDIR ls-remote $GITREMOTE &>/dev/null
+    sudo -u $SCRIPTUSER git -C $RESOURCEDIR ls-remote $GITREMOTE &>/dev/null
     if [ $? -eq 0  ]; then # $RESOURCEDIR is a valid git repo pointing to $GITREMOTE
         echo "Resources available. Checking out latest version..."
         GITCOMMAND="sudo -u $SCRIPTUSER git -C $RESOURCEDIR checkout master"
         if [ $VERBOSE -eq 0 ]; then
             GITCOMMAND="$GITCOMMAND -q"
         fi
-        GITCOMMAND="$GITCOMMAND && git -C $RESOURCEDIR pull"
+        GITCOMMAND="$GITCOMMAND && sudo -u $SCRIPTUSER git -C $RESOURCEDIR pull"
         if [ $VERBOSE -eq 0 ]; then
             GITCOMMAND="$GITCOMMAND -q"
         fi
