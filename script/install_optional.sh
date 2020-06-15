@@ -27,7 +27,7 @@ parseArguments() {
 # install packages
 #======================================
 installPackages() {
-    echo "Installing required packages..."
+    echo "Installing optional packages..."
 
     PACKAGES="git-gui"
     PACKAGES="$PACKAGES aspell-en"
@@ -40,6 +40,7 @@ installPackages() {
     PACKAGES="$PACKAGES lld"
     PACKAGES="$PACKAGES lldb"
     PACKAGES="$PACKAGES qt-creator"
+    PACKAGES="$PACKAGES qt5-*"
     PACKAGES="$PACKAGES cmake"
     PACKAGES="$PACKAGES vim-enhanced"
 
