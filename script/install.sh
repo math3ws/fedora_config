@@ -97,14 +97,12 @@ enableRepos () {
 installPackages() {
     echo "Installing required packages..."
 
-    PACKAGES="$PACKAGES curl"
-    PACKAGES="$PACKAGES dmenu"
+    PACKAGES="dmenu"
     PACKAGES="$PACKAGES git"
     PACKAGES="$PACKAGES i3"
     PACKAGES="$PACKAGES i3lock-color"
     PACKAGES="$PACKAGES i3status"
     PACKAGES="$PACKAGES util-linux-user"
-    PACKAGES="$PACKAGES vim-enhanced"
     PACKAGES="$PACKAGES zsh"
 
     PACKAGEINSTALLCOMMAND="dnf install -y $PACKAGES"

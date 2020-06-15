@@ -29,7 +29,7 @@ parseArguments() {
 installPackages() {
     echo "Installing required packages..."
 
-    PACKAGES="$PACKAGES git-gui"
+    PACKAGES="git-gui"
     PACKAGES="$PACKAGES aspell-en"
     PACKAGES="$PACKAGES aspell-cs"
     PACKAGES="$PACKAGES boost"
@@ -40,7 +40,8 @@ installPackages() {
     PACKAGES="$PACKAGES lld"
     PACKAGES="$PACKAGES lldb"
     PACKAGES="$PACKAGES qt-creator"
-    PACKAGES="$PACKAGES 'qt5-*'"
+    PACKAGES="$PACKAGES cmake"
+    PACKAGES="$PACKAGES vim-enhanced"
 
     PACKAGEINSTALLCOMMAND="dnf install -y $PACKAGES"
     if [ $VERBOSE -eq 0 ]; then
