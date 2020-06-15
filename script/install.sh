@@ -126,7 +126,7 @@ runInstallImpl() {
 #======================================
 # run install_impl.sh script
 #======================================
-runInstallImpl() {
+runInstallOptional() {
     $RESOURCEDIR/script/install_optional.sh
 }
 
