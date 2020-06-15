@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #======================================
 # check that the script is ran as root
