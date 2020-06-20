@@ -6,7 +6,7 @@
 setupProgramSettings() {
     SCRIPTPATH=$(readlink -f "$0")
     SCRIPTDIR=$(dirname "$SCRIPTPATH")
-    TEMPDIR="/tmp/fedora-config"
+    TEMPDIR="/tmp/fedora-config/tmp"
     RESOURCEDIR="$TEMPDIR/res"
     SCRIPTUSER=$(who | cut -d " " -f1)
     VERBOSE=0
@@ -93,9 +93,8 @@ changeShell() {
 installOhMyZsh() {
     OHMYZSHINSTALLFILE="$TEMPDIR/ohmyzshinstall.sh"
     OHMYZSHINSTALLFILEURL="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh"
-    OHMYZSHINSTALLCOMMAND="cd ~"
-    OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND && sudo -u $SCRIPTUSER mkdir -p $TEMPDIR"
-    OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND && sudo -u $SCRIPTUSER rm -rf /home/$SCRIPTUSER/.oh-my-zsh"
+    OHMYZSHINSTALLCOMMAND="sudo -u $SCRIPTUSER mkdir -p $TEMPDIR"
+    OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND && sudo -u $SCRIPTUSER rm -rf $HOME/.oh-my-zsh"
     OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND && sudo -u $SCRIPTUSER wget -O $OHMYZSHINSTALLFILE $OHMYZSHINSTALLFILEURL"
     if [ $VERBOSE -eq 0 ]; then
          OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND --quiet"
