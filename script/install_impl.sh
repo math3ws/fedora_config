@@ -6,8 +6,9 @@
 setupProgramSettings() {
     SCRIPTPATH=$(readlink -f "$0")
     SCRIPTDIR=$(dirname "$SCRIPTPATH")
-    TEMPDIR="/tmp/fedora-config/tmp"
-    RESOURCEDIR="$TEMPDIR/res"
+    REPODIR="/tmp/fedora-config"
+    TEMPDIR="$REPODIR/tmp"
+    RESOURCEDIR="$REPODIR/res"
     SCRIPTUSER=$(who | cut -d " " -f1)
     VERBOSE=0
 }
