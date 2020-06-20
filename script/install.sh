@@ -5,7 +5,9 @@
 #======================================
 SCRIPTPATH=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPTPATH")
-RESOURCEDIR="/tmp/fedora-config"
+REPODIR="/tmp/fedora-config"
+TEMPDIR="$REPODIR/tmp"
+RESOURCEDIR="$REPODIR/res"
 SCRIPTUSER=$(who | cut -d " " -f1)
 VERBOSE=0
 
@@ -40,6 +42,7 @@ isRanAsRoot() {
 installBasicDependencies() {
     local PACKAGES="coreutils"
     PACKAGES="$PACKAGES util-linux"
+    PACKAGES="$PACKAGES sudo"
 
     installPackages $PACKAGES
     if [ $? -ne 0 ]; then
@@ -144,20 +147,20 @@ cloneResources() {
     local GITREMOTE="git@github.com:math3ws/fedora_config.git"
 
     local GITCOMMAND=""
-    sudo -u $SCRIPTUSER git -C $RESOURCEDIR ls-remote $GITREMOTE &>/dev/null
+    sudo -u $SCRIPTUSER git -C $REPODIR ls-remote $GITREMOTE &>/dev/null
     if [ $? -eq 0  ]; then # $RESOURCEDIR is a valid git repo pointing to $GITREMOTE
         echo "Resources available. Checking out latest version..."
-        GITCOMMAND="sudo -u $SCRIPTUSER git -C $RESOURCEDIR checkout master"
+        GITCOMMAND="sudo -u $SCRIPTUSER git -C $REPODIR checkout master"
         if [ $VERBOSE -eq 0 ]; then
             GITCOMMAND="$GITCOMMAND -q"
         fi
-        GITCOMMAND="$GITCOMMAND && sudo -u $SCRIPTUSER git -C $RESOURCEDIR pull"
+        GITCOMMAND="$GITCOMMAND && sudo -u $SCRIPTUSER git -C $REPODIR pull"
         if [ $VERBOSE -eq 0 ]; then
             GITCOMMAND="$GITCOMMAND -q"
         fi
     else # we need to clone the repo
         echo "Resources not available. Cloning repository..."
-        GITCOMMAND="sudo -u $SCRIPTUSER git clone $GITREMOTE $RESOURCEDIR"
+        GITCOMMAND="sudo -u $SCRIPTUSER git clone $GITREMOTE $REPODIR"
         if [ $VERBOSE -eq 0 ]; then
             GITCOMMAND="$GITCOMMAND -q"
         fi
@@ -171,17 +174,129 @@ cloneResources() {
 }
 
 #======================================
-# run install_impl.sh script
+# Xresources setup
 #======================================
-runInstallImpl() {
-    $RESOURCEDIR/script/install_impl.sh
+setupXresources() {
+    echo "Deploying .Xresources file..."
+
+    sudo -u $SCRIPTUSER cp "$RESOURCEDIR/Xresources" "/home/$SCRIPTUSER/.Xresources"
 }
 
 #======================================
-# run install_impl.sh script
+# i3 setup
+#======================================
+setupI3() {
+    echo "Configuring i3..."
+
+    local I3CONFIGDIR="/home/$SCRIPTUSER/.config/i3"
+    local I3CONFIGCOMMAND="sudo -u $SCRIPTUSER mkdir -p $I3CONFIGDIR"
+    I3CONFIGCOMMAND="$I3CONFIGCOMMAND && sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/i3config\" \"$I3CONFIGDIR/config\""
+
+    eval $I3CONFIGCOMMAND
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 16
+    fi
+}
+
+#======================================
+# session manager setup
+#======================================
+changeSessionManager() {
+    echo "Changing session manager to i3..."
+
+    # gdm-specific steps:
+    local GDMUSERFILETEMPLATE="$RESOURCEDIR/accountsservice"
+    local GDMUSERFILE="/var/lib/AccountsService/users/$SCRIPTUSER"
+    local SESSIONMANAGERCHANGECOMMAND="cp $GDMUSERFILETEMPLATE $GDMUSERFILE"
+    SESSIONMANAGERCHANGECOMMAND="$SESSIONMANAGERCHANGECOMMAND && echo \"Icon=/home/$SCRIPTUSER/.face\" >> $GDMUSERFILE"
+
+    eval $SESSIONMANAGERCHANGECOMMAND
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 15
+    fi
+}
+
+#======================================
+# shell change
+#======================================
+changeShell() {
+    echo "Changing shell to zsh..."
+
+    local CHSHCOMMAND="chsh -s /bin/zsh $SCRIPTUSER"
+    if [ $VERBOSE -eq 0 ]; then
+        CHSHCOMMAND="$CHSHCOMMAND &>/dev/null"
+    fi
+
+    eval $CHSHCOMMAND
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 11
+    fi
+}
+
+#======================================
+# oh-my-zsh installation
+#======================================
+installOhMyZsh() {
+    echo "Installing oh-my-zsh..."
+
+    local OHMYZSHINSTALLFILE="$TEMPDIR/ohmyzshinstall.sh"
+    local OHMYZSHINSTALLFILEURL="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh"
+    local OHMYZSHINSTALLCOMMAND="sudo -u $SCRIPTUSER mkdir -p $TEMPDIR"
+    OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND && sudo -u $SCRIPTUSER rm -rf ~$SCRIPTUSER/.oh-my-zsh"
+    OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND && sudo -u $SCRIPTUSER wget -O $OHMYZSHINSTALLFILE $OHMYZSHINSTALLFILEURL"
+    if [ $VERBOSE -eq 0 ]; then
+         OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND --quiet"
+    fi
+    OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND && sudo -u $SCRIPTUSER sh $OHMYZSHINSTALLFILE --unattended"
+    if [ $VERBOSE -eq 0 ]; then
+         OHMYZSHINSTALLCOMMAND="$OHMYZSHINSTALLCOMMAND &>/dev/null"
+    fi
+
+    eval $OHMYZSHINSTALLCOMMAND
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 12
+    fi
+}
+
+#======================================
+# zsh config
+#======================================
+setupZsh() {
+    echo "Configuring zsh..."
+
+    local ZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/zshrc\" \"/home/$SCRIPTUSER/.zshrc\""
+
+    eval $ZSHCONFIGCOMMAND
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 13
+    fi
+}
+
+#======================================
+# oh-my-zsh config
+#======================================
+setupOhMyZsh () {
+    echo "Configuring oh-my-zsh..."
+
+    local OHMYZSHCONFIGCOMMAND="sudo -u $SCRIPTUSER cp \"$RESOURCEDIR/alias.zsh\" \"/home/$SCRIPTUSER/.oh-my-zsh/custom/alias.zsh\""
+
+    eval $OHMYZSHCONFIGCOMMAND
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 14
+    fi
+}
+
+#======================================
+# run install_optional.sh script
 #======================================
 runInstallOptional() {
-    $RESOURCEDIR/script/install_optional.sh
+    $REPODIR/script/install_optional.sh
 }
 
 # saner programming env: these switches turn some bugs into errors
@@ -193,6 +308,11 @@ parseArguments "$@" && \
 enableRepos && \
 installRequiredPackages && \
 cloneResources && \
-runInstallImpl && \
+setupXresources && \
+setupI3 && \
+changeSessionManager && \
+changeShell && \
+installOhMyZsh && \
+setupZsh && \
+setupOhMyZsh && \
 runInstallOptional
-
