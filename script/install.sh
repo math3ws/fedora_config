@@ -40,6 +40,8 @@ isRanAsRoot() {
 # install basic dependencies
 #======================================
 installBasicDependencies() {
+    echo "Installing basic dependencies..."
+
     local PACKAGES="coreutils"
     PACKAGES="$PACKAGES util-linux"
     PACKAGES="$PACKAGES sudo"
@@ -129,6 +131,7 @@ installRequiredPackages() {
     PACKAGES="$PACKAGES i3lock-color"
     PACKAGES="$PACKAGES i3status"
     PACKAGES="$PACKAGES util-linux-user"
+    PACKAGES="$PACKAGES wget"
     PACKAGES="$PACKAGES zsh"
 
     installPackages $PACKAGES
@@ -293,10 +296,31 @@ setupOhMyZsh () {
 }
 
 #======================================
-# run install_optional.sh script
+# install packages
 #======================================
-runInstallOptional() {
-    $REPODIR/script/install_optional.sh
+installOptionalPackages() {
+    echo "Installing optional packages..."
+
+    local PACKAGES="git-gui"
+    PACKAGES="$PACKAGES aspell-en"
+    PACKAGES="$PACKAGES aspell-cs"
+    PACKAGES="$PACKAGES boost"
+    PACKAGES="$PACKAGES boost-devel"
+    PACKAGES="$PACKAGES clang"
+    PACKAGES="$PACKAGES clang-devel"
+    PACKAGES="$PACKAGES clang-tools-extra"
+    PACKAGES="$PACKAGES lld"
+    PACKAGES="$PACKAGES lldb"
+    PACKAGES="$PACKAGES qt-creator"
+    PACKAGES="$PACKAGES qt5-*"
+    PACKAGES="$PACKAGES cmake"
+    PACKAGES="$PACKAGES vim-enhanced"
+
+    installPackages $PACKAGES
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 2
+    fi
 }
 
 # saner programming env: these switches turn some bugs into errors
@@ -315,4 +339,4 @@ changeShell && \
 installOhMyZsh && \
 setupZsh && \
 setupOhMyZsh && \
-runInstallOptional
+installOptionalPackages
