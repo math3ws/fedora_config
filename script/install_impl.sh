@@ -3,15 +3,13 @@
 #======================================
 # script variables
 #======================================
-setupProgramSettings() {
-    SCRIPTPATH=$(readlink -f "$0")
-    SCRIPTDIR=$(dirname "$SCRIPTPATH")
-    REPODIR="/tmp/fedora-config"
-    TEMPDIR="$REPODIR/tmp"
-    RESOURCEDIR="$REPODIR/res"
-    SCRIPTUSER=$(who | cut -d " " -f1)
-    VERBOSE=0
-}
+SCRIPTPATH=$(readlink -f "$0")
+SCRIPTDIR=$(dirname "$SCRIPTPATH")
+REPODIR="/tmp/fedora-config"
+TEMPDIR="$REPODIR/tmp"
+RESOURCEDIR="$REPODIR/res"
+SCRIPTUSER=$(who | cut -d " " -f1)
+VERBOSE=0
 
 #======================================
 # argument parsing
