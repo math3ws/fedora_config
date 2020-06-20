@@ -3,7 +3,7 @@
 #======================================
 # check that the script is ran as root
 #======================================
-isRanAsRoot () {
+isRanAsRoot() {
     echo "Checking if script is ran as root..."
     if [[ $EUID -ne 0 ]]; then
         echo "This script must be run as root" 
@@ -26,9 +26,6 @@ setupProgramSettings () {
 # argument parsing
 #======================================
 parseArguments() {
-    # saner programming env: these switches turn some bugs into errors
-    set -o errexit -o pipefail -o noclobber -o nounset
-
     # -allow a command to fail with !’s side effect on errexit
     # -use return value from ${PIPESTATUS[0]}, because ! hosed $?
     ! getopt --test > /dev/null
@@ -57,7 +54,7 @@ parseArguments() {
     while true; do
         case "$1" in
             -v|--verbose)
-                v=1
+                VERBOSE=1
                 shift
                 ;;
             --)
@@ -75,7 +72,7 @@ parseArguments() {
 #======================================
 # enable third party dnf repos
 #======================================
-enableRepos () {
+enableRepos() {
     echo "Enabling third-party repos..."
 
     REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
@@ -120,7 +117,7 @@ installPackages() {
 #======================================
 # clone git repo
 #======================================
-cloneResources () {
+cloneResources() {
     echo "Checking if resources are available..."
 
     GITREMOTE="git@github.com:math3ws/fedora_config.git"
@@ -165,6 +162,9 @@ runInstallImpl() {
 runInstallOptional() {
     $RESOURCEDIR/script/install_optional.sh
 }
+
+# saner programming env: these switches turn some bugs into errors
+set -o errexit -o pipefail -o noclobber -o nounset
 
 isRanAsRoot && setupProgramSettings && parseArguments && enableRepos && installPackages && cloneResources && runInstallImpl && runInstallOptional
 
