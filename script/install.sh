@@ -1,10 +1,33 @@
 #!/bin/bash
 
 #======================================
+# setup global script variables
+#======================================
+SCRIPTPATH=$(readlink -f "$0")
+SCRIPTDIR=$(dirname "$SCRIPTPATH")
+RESOURCEDIR="/tmp/fedora-config"
+SCRIPTUSER=$(who | cut -d " " -f1)
+VERBOSE=0
+
+#======================================
+# install packages passed in arguments
+#======================================
+installPackages() {
+    local PACKAGEINSTALLCOMMAND="dnf install -y $@"
+    if [ $VERBOSE -eq 0 ]; then
+        PACKAGEINSTALLCOMMAND="$PACKAGEINSTALLCOMMAND -q &>/dev/null"
+    fi
+
+    eval $PACKAGEINSTALLCOMMAND
+    return $?
+}
+
+#======================================
 # check that the script is ran as root
 #======================================
 isRanAsRoot() {
     echo "Checking if script is ran as root..."
+
     if [[ $EUID -ne 0 ]]; then
         echo "This script must be run as root" 
         return 1
@@ -12,14 +35,17 @@ isRanAsRoot() {
 }
 
 #======================================
-# setup script variables
+# install basic dependencies
 #======================================
-setupProgramSettings () {
-    SCRIPTPATH=$(readlink -f "$0")
-    SCRIPTDIR=$(dirname "$SCRIPTPATH")
-    RESOURCEDIR="/tmp/fedora-config"
-    SCRIPTUSER=$(who | cut -d " " -f1)
-    VERBOSE=0
+installBasicDependencies() {
+    local PACKAGES="coreutils"
+    PACKAGES="$PACKAGES util-linux"
+
+    installPackages $PACKAGES
+    if [ $? -ne 0 ]; then
+        echo "An error occured. Exiting."
+        return 2
+    fi
 }
 
 #======================================
@@ -34,14 +60,14 @@ parseArguments() {
         return 1
     fi
 
-    OPTIONS=v
-    LONGOPTS=verbose
+    local OPTIONS=v
+    local LONGOPTIONS=verbose
 
     # -regarding ! and PIPESTATUS see above
     # -temporarily store output to be able to check for errors
     # -activate quoting/enhanced mode (e.g. by writing out “--options”)
     # -pass arguments only via   -- "$@"   to separate them correctly
-    ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+    ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTIONS --name "$0" -- "$@")
     if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
         # e.g. return value is 1
         #  then getopt has complained about wrong arguments to stdout
@@ -75,7 +101,7 @@ parseArguments() {
 enableRepos() {
     echo "Enabling third-party repos..."
 
-    REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
+    local REPOENABLECOMMAND="dnf copr enable -y ianhattendorf/desktop"
 
     if [ $VERBOSE -eq 0 ]; then
         REPOENABLECOMMAND="$REPOENABLECOMMAND -q &>/dev/null"
@@ -91,10 +117,10 @@ enableRepos() {
 #======================================
 # install packages
 #======================================
-installPackages() {
+installRequiredPackages() {
     echo "Installing required packages..."
 
-    PACKAGES="dmenu"
+    local PACKAGES="dmenu"
     PACKAGES="$PACKAGES git"
     PACKAGES="$PACKAGES i3"
     PACKAGES="$PACKAGES i3lock-color"
@@ -102,12 +128,7 @@ installPackages() {
     PACKAGES="$PACKAGES util-linux-user"
     PACKAGES="$PACKAGES zsh"
 
-    PACKAGEINSTALLCOMMAND="dnf install -y $PACKAGES"
-    if [ $VERBOSE -eq 0 ]; then
-        PACKAGEINSTALLCOMMAND="$PACKAGEINSTALLCOMMAND -q &>/dev/null"
-    fi
-
-    eval $PACKAGEINSTALLCOMMAND
+    installPackages $PACKAGES
     if [ $? -ne 0 ]; then
         echo "An error occured. Exiting."
         return 2
@@ -120,9 +141,9 @@ installPackages() {
 cloneResources() {
     echo "Checking if resources are available..."
 
-    GITREMOTE="git@github.com:math3ws/fedora_config.git"
+    local GITREMOTE="git@github.com:math3ws/fedora_config.git"
 
-    GITCOMMAND=""
+    local GITCOMMAND=""
     sudo -u $SCRIPTUSER git -C $RESOURCEDIR ls-remote $GITREMOTE &>/dev/null
     if [ $? -eq 0  ]; then # $RESOURCEDIR is a valid git repo pointing to $GITREMOTE
         echo "Resources available. Checking out latest version..."
@@ -167,10 +188,10 @@ runInstallOptional() {
 set -o errexit -o pipefail -o noclobber -o nounset
 
 isRanAsRoot && \
-setupProgramSettings && \
+installBasicDependencies && \
 parseArguments "$@" && \
 enableRepos && \
-installPackages && \
+installRequiredPackages && \
 cloneResources && \
 runInstallImpl && \
 runInstallOptional
